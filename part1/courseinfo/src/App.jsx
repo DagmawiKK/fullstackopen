@@ -4,23 +4,54 @@ const Header = ({course}) => {
   )
 }
 
-const Content = ({part, exerciseNumber}) => {
+// Without Part Component
+
+// const Content = ({part, exerciseNumber}) => {
+//   return (
+//     <>
+//      {
+//       part.map((partNum, idx) => 
+//       (<p key={idx}>{partNum} {exerciseNumber[idx]}</p>)
+//       )
+//      }
+//     </>
+//   )
+// }
+
+// With Part Component
+
+const Part = ({partNum, exerciseNumber}) => {
   return (
-    <>
-     {
-      part.map((partNum, idx) => 
-      (<p key={idx}>{partNum} {exerciseNumber[idx]}</p>)
-      )
-     }
-    </>
+    <p>
+      {partNum} {exerciseNumber}
+    </p>
+  );
+};
+
+const Content = ({info}) => {
+  return (
+    <div>
+      {
+        info[0].map((p, idx) => 
+        (
+          <Part key = {idx} partNum = {p} exerciseNumber = {info[1][idx]} />
+        )
+        )
+      } 
+    </div>
   )
 }
 
 const Total = ({tot}) => {
+  let total = 0;
+  for (let i = 0; i < tot.length; i++) {
+    total += tot[i]
+  }
+  
   return (
-    <p>Number of exercises {tot}</p>
+    <p>Number of exercises {total}</p>
   )
-}
+};
 
 const App = () => {
   const course = 'Half Stack application development';
@@ -30,32 +61,14 @@ const App = () => {
   const exercises2 = 7;
   const part3 = 'State of a component';
   const exercises3 = 14;
-  const total = exercises1 + exercises2 + exercises3;
 
-  // return (
-  //   <div>
-  //     <h1>{course}</h1>
-  //     <p>
-  //       {part1} {exercises1}
-  //     </p>
-  //     <p>
-  //       {part2} {exercises2}
-  //     </p>
-  //     <p>
-  //       {part3} {exercises3}
-  //     </p>
-  //     <p>Number of exercises {exercises1 + exercises2 + exercises3}</p>
-  //   </div>
-  // )
   return (
     <div>
       <Header course={course} />
-      <Content part = {[part1, part2, part3]} exerciseNumber = {[exercises1, exercises2, exercises3]} />      
-      {/* <Content part = {part2} exerciseNumber = {exercises2} /> */}
-      {/* <Content part = {part3} exerciseNumber = {exercises3} /> */}
-      <Total tot = {total} />
+      <Content info = {[[part1, part2, part3], [exercises1, exercises2, exercises3]]} />      
+      <Total tot = {[exercises1, exercises2, exercises3]} />
     </div>
   )
-}
+};
 
 export default App
