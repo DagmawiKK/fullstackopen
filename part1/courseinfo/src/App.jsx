@@ -45,7 +45,7 @@ const Content = ({info}) => {
 const Total = ({tot}) => {
   let total = 0;
   for (let i = 0; i < tot.length; i++) {
-    total += tot[i]
+    total += tot[i].exercises;
   }
 
   return (
@@ -55,24 +55,26 @@ const Total = ({tot}) => {
 
 const App = () => {
   const course = 'Half Stack application development'
-  const part1 = {
-    name: 'Fundamentals of React',
-    exercises: 10
-  }
-  const part2 = {
-    name: 'Using props to pass data',
-    exercises: 7
-  }
-  const part3 = {
-    name: 'State of a component',
-    exercises: 14
-  }
+  const parts = [
+    {
+      name: 'Fundamentals of React',
+      exercises: 10
+    },
+    {
+      name: 'Using props to pass data',
+      exercises: 7
+    },
+    {
+      name: 'State of a component',
+      exercises: 14
+    }
+  ]
 
   return (
     <div>
       <Header course={course} />
-      <Content info = {[part1, part2, part3]} />      
-      <Total tot = {[part1.exercises, part2.exercises, part3.exercises]} />
+      <Content info = {parts} />      
+      <Total tot = {parts} />
     </div>
   )
 };
