@@ -19,12 +19,18 @@ const GiveFeedback = ({handleFeedback}) => {
 }
 
 const Statistics = ({good, neutral, bad}) => {
+  const total = good + neutral + bad  ?? 0
+  const avg = Number.isNaN((good - bad) / total) ? 0: (good - bad) / total
+  const pos = Number.isNaN(good / total) ? 0 : good / total;
   return (
     <div>
       <h1>statistics</h1>
       <p>good {good}</p>
       <p>neutral {neutral}</p>
       <p>bad {bad}</p>
+      <p>all {total}</p>
+      <p>average {avg}</p>
+      <p>positive {pos}</p>
     </div>
   )
 }
