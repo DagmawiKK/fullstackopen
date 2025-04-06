@@ -33,12 +33,24 @@ const App = () => {
     prev = newSelected
   }
 
+  const [votes, setVotes] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0})
+
+  const handleVote = () => {
+    const newVotes = {
+      ...votes,
+      [selected]: votes[selected] + 1
+    }
+    setVotes(newVotes)
+  }
+
   return (
     <>
     <div>
       {anecdotes[selected]}
+      <p>has {votes[selected]} votes</p>
     </div>
     <Button onClick={handleSelected} text="next anecdote" />
+    <Button onClick={handleVote} text={"vote"} />
     </>
   )
 }
