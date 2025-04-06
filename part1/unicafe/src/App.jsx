@@ -18,12 +18,18 @@ const GiveFeedback = ({handleFeedback}) => {
   )
 }
 
+const StatisticsLine = ({text, val}) => {
+  return (
+    <p>{text} {val}</p>
+  )
+}
+
 const Statistics = ({good, neutral, bad}) => {
   if (good == 0 && neutral == 0 && bad == 0) {
     return(
       <div>
         <h1>statistics</h1>
-        <p>No feedback given yets</p>
+        <p>No feedbacks given yet</p>
       </div>
     )
   }
@@ -34,12 +40,12 @@ const Statistics = ({good, neutral, bad}) => {
     return (
       <div>
         <h1>statistics</h1>
-        <p>good {good}</p>
-        <p>neutral {neutral}</p>
-        <p>bad {bad}</p>
-        <p>all {total}</p>
-        <p>average {avg}</p>
-        <p>positive {pos}</p>
+        <StatisticsLine text="good" val ={good} />
+        <StatisticsLine text="neutral" val ={neutral} />
+        <StatisticsLine text="bad" val ={bad} />
+        <StatisticsLine text="all" val ={total} />
+        <StatisticsLine text="average" val ={avg} />
+        <StatisticsLine text="positive" val ={pos} />
       </div>
     )}
 }
