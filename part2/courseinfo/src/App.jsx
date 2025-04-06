@@ -29,11 +29,11 @@ const Content = ({info}) => {
 }
 
 const Total = ({tot}) => {
-  let total = 0;
-  for (let i = 0; i < tot.length; i++) {
-    total += tot[i].exercises;
-  }
-
+  let total = tot.reduce((accu, val) => {
+    console.log(val)
+    return accu + val.exercises
+  }, 0,)
+  console.log(tot)
   return (
     <p>Number of exercises {total}</p>
   )
