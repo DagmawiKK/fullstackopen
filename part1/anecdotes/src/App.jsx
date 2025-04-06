@@ -6,6 +6,23 @@ const Button = ({onClick, text}) => {
   )
 }
 
+const AnecdoteMostVote = ({anecdotes, votes}) => {
+  let _max = 0;
+  for (let vote in votes) {
+    if (votes[vote] > votes[_max]) {
+      _max = vote
+    }
+  }
+
+  return (
+    <div>
+    <h1>Anecdote with most votes</h1>
+    <p>{anecdotes[_max]}</p>
+    <p>has {votes[_max]} votes</p>
+  </div>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -34,7 +51,6 @@ const App = () => {
   }
 
   const [votes, setVotes] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0})
-
   const handleVote = () => {
     const newVotes = {
       ...votes,
@@ -46,11 +62,14 @@ const App = () => {
   return (
     <>
     <div>
-      {anecdotes[selected]}
+      <h1>Anecdote of the day</h1>
+      <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} votes</p>
-    </div>
     <Button onClick={handleSelected} text="next anecdote" />
     <Button onClick={handleVote} text={"vote"} />
+    </div>
+    <AnecdoteMostVote votes={votes} anecdotes={anecdotes}/>
+
     </>
   )
 }
