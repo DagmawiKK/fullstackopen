@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import phonebookService from "./services/phonebook"
 
 const Search = ({searchSubmit, handleInputSearch, search}) => {
   return (
@@ -41,62 +42,6 @@ const DisplayNumbers = ({filtered}) => {
   )
 }
 
-// Without useEffect (fetching)
-/*
-const App = () => {
-
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
-  const [newName, setNewName] = useState("")
-  const [newNumber, setNewNumber] = useState("")
-  const [search, setSearch] = useState("")
-  const [filtered, setFiltered] = useState(persons)
-
-  const handleNewName = (e) => setNewName(e.target.value)
-  const handleNewNumber = (e) => setNewNumber(e.target.value)
-  const handleInputSearch = (e) => setSearch(e.target.value)
-
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    const alreadyAdded = persons.find((person) => person.name === newName);
-    if (alreadyAdded === undefined) {
-      const newPerson = { name: newName, number: newNumber };
-      setPersons([...persons, newPerson]); // Using spread operator to avoid mutations
-    } else {
-      alert(`${newName} is already added to phonebook`);
-    }
-  }, [newName, newNumber, persons]);
-
-  const searchSubmit = (e) => {
-    e.preventDefault()
-    if (search != ""){
-      const newPersons = persons.filter((person) => person.name.toLowerCase().includes(search.toLowerCase()))
-      setFiltered(newPersons)
-    }
-    if (search === "") {
-      setFiltered(persons)
-    }
-  }
-
-  return (
-    <div>
-      <h2>Phonebook</h2>
-      <Search searchSubmit={searchSubmit} handleInputSearch={handleInputSearch} search = {search}/>
-      <h2>add a new</h2>
-      <AddNewPerson handleSubmit={handleSubmit} handleNewName={handleNewName} newName={newName} handleNewNumber={handleNewNumber} newNumber={newNumber}/>
-      <div>
-        <h2>Numbers</h2>
-        <DisplayNumbers filtered={filtered}/>
-      </div>
-    </div>
-  )
-}
-*/
-
 // With useEffect (fetching)
 
 const App = () => {
@@ -118,7 +63,7 @@ const App = () => {
       setFiltered(response.data)
     }
 
-    const promise = axios.get("http://localhost:3001/persons")
+    const promise = phonebookService.getAll()
     promise.then(eventHandler)
   }
 
@@ -129,8 +74,11 @@ const App = () => {
     const alreadyAdded = persons.find((person) => person.name === newName);
     if (alreadyAdded === undefined) {
       const newPerson = { name: newName, number: newNumber };
-      setPersons([...persons, newPerson]);
-      setFiltered([...persons, newPerson]);
+      phonebookService.addNew(newPerson)
+                      .then(response => {
+                        setPersons([...persons, response.data])
+                        setFiltered([...persons, response.data]);
+                      })
     } else {
       alert(`${newName} is already added to phonebook`);
     }
