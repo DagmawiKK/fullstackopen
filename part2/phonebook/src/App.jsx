@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const Search = ({searchSubmit, handleInputSearch, search}) => {
   return (
@@ -39,7 +40,11 @@ const DisplayNumbers = ({filtered}) => {
     </>
   )
 }
+
+// Without useEffect (fetching)
+/*
 const App = () => {
+
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
     { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
@@ -55,15 +60,79 @@ const App = () => {
   const handleNewNumber = (e) => setNewNumber(e.target.value)
   const handleInputSearch = (e) => setSearch(e.target.value)
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const alreadyAdded = persons.find((person) => person.name === newName)
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault();
+    const alreadyAdded = persons.find((person) => person.name === newName);
     if (alreadyAdded === undefined) {
-      setPersons(persons.concat({name: newName, number: newNumber}))
-      setFiltered(filtered.concat({name: newName, number: newNumber}))
+      const newPerson = { name: newName, number: newNumber };
+      setPersons([...persons, newPerson]); // Using spread operator to avoid mutations
+    } else {
+      alert(`${newName} is already added to phonebook`);
     }
-    else {
-      alert(`${newName} is already added to phonebook`)
+  }, [newName, newNumber, persons]);
+
+  const searchSubmit = (e) => {
+    e.preventDefault()
+    if (search != ""){
+      const newPersons = persons.filter((person) => person.name.toLowerCase().includes(search.toLowerCase()))
+      setFiltered(newPersons)
+    }
+    if (search === "") {
+      setFiltered(persons)
+    }
+  }
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <Search searchSubmit={searchSubmit} handleInputSearch={handleInputSearch} search = {search}/>
+      <h2>add a new</h2>
+      <AddNewPerson handleSubmit={handleSubmit} handleNewName={handleNewName} newName={newName} handleNewNumber={handleNewNumber} newNumber={newNumber}/>
+      <div>
+        <h2>Numbers</h2>
+        <DisplayNumbers filtered={filtered}/>
+      </div>
+    </div>
+  )
+}
+*/
+
+// With useEffect (fetching)
+
+const App = () => {
+
+  const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState("")
+  const [newNumber, setNewNumber] = useState("")
+  const [search, setSearch] = useState("")
+  const [filtered, setFiltered] = useState([])
+
+  const handleNewName = (e) => setNewName(e.target.value)
+  const handleNewNumber = (e) => setNewNumber(e.target.value)
+  const handleInputSearch = (e) => setSearch(e.target.value)
+
+  const effectHook = () => {
+    const eventHandler = (response) => {
+      console.log(response.data)
+      setPersons(response.data)
+      setFiltered(response.data)
+    }
+
+    const promise = axios.get("http://localhost:3001/persons")
+    promise.then(eventHandler)
+  }
+
+  useEffect(effectHook, [])
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const alreadyAdded = persons.find((person) => person.name === newName);
+    if (alreadyAdded === undefined) {
+      const newPerson = { name: newName, number: newNumber };
+      setPersons([...persons, newPerson]);
+      setFiltered([...persons, newPerson]);
+    } else {
+      alert(`${newName} is already added to phonebook`);
     }
   }
 
