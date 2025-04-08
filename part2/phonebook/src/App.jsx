@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import phonebookService from "./services/phonebook"
 
 const Search = ({searchSubmit, handleInputSearch, search}) => {
@@ -28,16 +27,20 @@ const AddNewPerson = ({handleSubmit, handleNewName, newName, handleNewNumber, ne
   )
 }
 
-const Person = ({person}) => {
+const Person = ({person, handleDelete}) => {
   return (
+    <>
     <p>{person.name} {person.number}</p>
+    <button onClick={handleDelete}>Delete</button>
+    </>
   )
 }
 
-const DisplayNumbers = ({filtered}) => {
+const DisplayNumbers = ({filtered, handleDelete}) => {
+  console.log("been here", filtered)
   return (
     <>
-    {filtered.map((person, idx) => <Person key={idx} person={person}/>)}
+    {filtered.map((person, idx) => <Person key={idx} person={person} handleDelete={() => handleDelete(person)}/>)}
     </>
   )
 }
@@ -84,6 +87,15 @@ const App = () => {
     }
   }
 
+  const handleDelete = (person) => {
+    const con = confirm(`delete ${person.name}`)
+    if (con) {
+      phonebookService.deleteContact(person)
+      setFiltered(filtered.filter(p => p.id != person.id ))
+      setPersons(persons.filter(p => p.id != person.id))
+    }
+  }
+
   const searchSubmit = (e) => {
     e.preventDefault()
     if (search != ""){
@@ -103,7 +115,7 @@ const App = () => {
       <AddNewPerson handleSubmit={handleSubmit} handleNewName={handleNewName} newName={newName} handleNewNumber={handleNewNumber} newNumber={newNumber}/>
       <div>
         <h2>Numbers</h2>
-        <DisplayNumbers filtered={filtered}/>
+        <DisplayNumbers filtered={filtered} handleDelete={handleDelete}/>
       </div>
     </div>
   )
