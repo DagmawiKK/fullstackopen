@@ -37,7 +37,6 @@ const Person = ({person, handleDelete}) => {
 }
 
 const DisplayNumbers = ({filtered, handleDelete}) => {
-  console.log("been here", filtered)
   return (
     <>
     {filtered.map((person, idx) => <Person key={idx} person={person} handleDelete={() => handleDelete(person)}/>)}
@@ -75,15 +74,24 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const alreadyAdded = persons.find((person) => person.name === newName);
-    if (alreadyAdded === undefined) {
+    if (alreadyAdded) {
+      const conf = confirm(`${newName} is already added to phonebook, replace old number with new one?`)
+      if (conf) {
+        const updatedContact = {...alreadyAdded, number: newNumber};
+        phonebookService.updateContact(updatedContact)
+                        .then(response => {
+                          setFiltered(persons.map(p => p.name === newName ? response.data: p ))
+                          setPersons(persons.map(p => p.name === newName ? response.data: p ))
+                        })
+      }
+    }
+    else {
       const newPerson = { name: newName, number: newNumber };
       phonebookService.addNew(newPerson)
                       .then(response => {
                         setPersons([...persons, response.data])
                         setFiltered([...persons, response.data]);
                       })
-    } else {
-      alert(`${newName} is already added to phonebook`);
     }
   }
 
