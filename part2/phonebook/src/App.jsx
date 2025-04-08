@@ -28,10 +28,23 @@ const AddNewPerson = ({handleSubmit, handleNewName, newName, handleNewNumber, ne
 }
 
 const Person = ({person, handleDelete}) => {
+  const personStyle = {
+    fontSize: "1rem",
+    margin: "1rem",
+    padding: 10,
+  }
+
+  const buttonStyle = {
+    fontSize: "1rem",
+    marginLeft: "1rem",
+    padding: 10,
+    borderRadius: 10,
+    border: "None"
+  }
   return (
     <>
-    <p>{person.name} {person.number}</p>
-    <button onClick={handleDelete}>Delete</button>
+    <p style={personStyle}>{person.name} {person.number}</p>
+    <button style={buttonStyle} onClick={handleDelete}>Delete</button>
     </>
   )
 }
@@ -44,6 +57,27 @@ const DisplayNumbers = ({filtered, handleDelete}) => {
   )
 }
 
+const Notification = ({notification}) => {
+  if (notification.length == 0) {
+    return
+  }
+  const notificationStyle = {
+    color: "white",
+    fontSize: "2rem",
+    margin: "2rem",
+    padding: 18,
+    backgroundColor: "green",
+    border: "none",
+    borderRadius: 10,
+  }
+
+  const errorVariant = "red"
+
+  return (
+    <div style={notification[0] == "m" ? notificationStyle: {...notificationStyle, backgroundColor: errorVariant}}>{notification[1]}</div>
+  )
+}
+
 // With useEffect (fetching)
 
 const App = () => {
@@ -53,6 +87,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [search, setSearch] = useState("")
   const [filtered, setFiltered] = useState([])
+  const [notification, setNotification] = useState([])
 
   const handleNewName = (e) => setNewName(e.target.value)
   const handleNewNumber = (e) => setNewNumber(e.target.value)
@@ -83,6 +118,12 @@ const App = () => {
                           setFiltered(persons.map(p => p.name === newName ? response.data: p ))
                           setPersons(persons.map(p => p.name === newName ? response.data: p ))
                         })
+                        .catch((e) => {
+                          setNotification(["e", `${alreadyAdded.name} has been deleted before`])
+                          setTimeout(() => {
+                            setNotification([])
+                          }, 2000);
+                        })
       }
     }
     else {
@@ -91,6 +132,12 @@ const App = () => {
                       .then(response => {
                         setPersons([...persons, response.data])
                         setFiltered([...persons, response.data]);
+                      })
+                      .then(() => {
+                        setNotification(["m", `${newName} has been added`])
+                        setTimeout(() => {
+                          setNotification([])
+                        }, 2000);
                       })
     }
   }
@@ -118,6 +165,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification}/>
       <Search searchSubmit={searchSubmit} handleInputSearch={handleInputSearch} search = {search}/>
       <h2>add a new</h2>
       <AddNewPerson handleSubmit={handleSubmit} handleNewName={handleNewName} newName={newName} handleNewNumber={handleNewNumber} newNumber={newNumber}/>
