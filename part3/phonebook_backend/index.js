@@ -40,7 +40,7 @@ app.get("/api/persons/:id", (req, res) => {
     const contact = persons.find(p => p.id == id)
 
     if(!contact) {
-        return res.status(404).send("Contact not found")
+        return res.status(404).json({error: "Contact not found"})
     }
     res.json(contact)
 
