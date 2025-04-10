@@ -35,6 +35,18 @@ app.get("/info/", (req, res) => {
             <p>${date.toUTCString()}</p>`)
 })
 
+app.get("/api/persons/:id", (req, res) => {
+    const id = req.params.id
+    const contact = persons.find(p => p.id == id)
+
+    if(!contact) {
+        return res.status(404).send("Contact not found")
+    }
+    res.json(contact)
+
+})
+
+
 const PORT = 3001
 app.listen(PORT)
 console.log(`App running on port: ${PORT}`)
