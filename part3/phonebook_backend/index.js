@@ -52,6 +52,26 @@ app.delete("/api/persons/:id", (req, res) => {
     res.status(204).end()
 })
 
+const generateID = () => String(Math.floor(Math.random() * 100000) )
+
+app.post("/api/persons/", (req, res) => {
+    const body = req.body
+    if(!body.name) {
+        return res.status(400).json({error: "Name not entered"})
+    }
+    else if (!body.number) {
+        return res.status(400).json({error: "Number not entered"})
+    }
+
+    const newPerson = {
+        "id": generateID(),
+        "name" : body.name,
+        "number" : body.number,
+    }
+
+    persons = persons.concat(newPerson)
+    res.status(201).json(newPerson)
+})
 
 const PORT = 3001
 app.listen(PORT)
