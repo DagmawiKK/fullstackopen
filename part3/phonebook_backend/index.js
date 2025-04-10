@@ -1,6 +1,8 @@
 const express = require("express")
 const app = express()
+const morgan = require("morgan")
 app.use(express.json())
+app.use(morgan("tiny"))
 
 let persons = [
     { 
@@ -55,7 +57,6 @@ app.delete("/api/persons/:id", (req, res) => {
 const generateID = () => String(Math.floor(Math.random() * 100000) )
 
 app.post("/api/persons/", (req, res) => {
-    const body = req.body
     if(!body.name) {
         return res.status(400).json({error: "Name not entered"}).end()
     }
@@ -63,7 +64,7 @@ app.post("/api/persons/", (req, res) => {
         return res.status(400).json({error: "Number not entered"}).end()
     }
     else {
-        const found = persons.filter(person => person.name == body.name)
+        const found = persons.some(person => person.name === body.name)
         if(found) {
             return res.status(400).json({error: "name must be unique"}).end()
         }
