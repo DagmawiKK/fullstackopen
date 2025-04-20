@@ -5,7 +5,6 @@ const blogListRouter = require('./controllers/blogList')
 const config = require('./utils/config')
 const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
-console.log('Middleware:', middleware)
 
 const app = express()
 
