@@ -1,3 +1,4 @@
+// config() reads .env file and assigns the content to process.env
 require('dotenv').config()
 
 const PORT = process.env.PORT

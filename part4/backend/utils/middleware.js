@@ -1,15 +1,18 @@
 const logger = require('../utils/logger')
 
+// used when logging responses
 const requestLogger = (req, res, next) => {
   logger.info(`Method: ${req.method} Path: ${req.path} Body: ${JSON.stringify(req.body)}`)
   next()
 }
 
+// handles unknown routes
 const unknownEndPoint = (req, res, next) => {
   res.sendStatus(404).json({ error: 'Page not found' })
   next()
 }
 
+// error handling middlware
 const errorHandler = (error, req, res, next) => {
   logger.error(error.message)
 
