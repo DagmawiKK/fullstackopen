@@ -1,6 +1,7 @@
 const blogListRouter = require('express').Router()
 const logger = require('../utils/logger')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 blogListRouter.route('/')
   .get(async (req, res, next) => {
@@ -12,18 +13,25 @@ blogListRouter.route('/')
     }
   })
   .post(async (req, res, next) => {
-    const blog = req.body
-    const newBlog = new Blog({
-      title: blog.title,
-      author: blog.author,
-      tags: blog.tags || [],
-      upvotes: blog.upvotes || 0,
-      url: blog.url
-    })
-
-    if (!newBlog.title || !newBlog.url) return res.status(400).json({ error: 'Invalid input' })
     try {
+      const blog = req.body
+      const user = await User.findById(blog.userId)
+
+      const newBlog = new Blog({
+        title: blog.title,
+        user: user.id,
+        tags: blog.tags || [],
+        upvotes: blog.upvotes || 0,
+        url: blog.url
+      })
+
+      if (!newBlog.title || !newBlog.url) return res.status(400).json({ error: 'Invalid input' })
+
       const saved = await newBlog.save()
+
+      user.blogs = user.blogs.concat(saved._id)
+      await user.save()
+
       res.status(201).json(saved)
     } catch(error) {
       next(error)
